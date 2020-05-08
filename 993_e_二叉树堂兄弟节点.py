@@ -15,37 +15,21 @@ class TreeNode:
 
 
 class Solution:
+    # 逐层遍历
     def __init__(self):
-        self._x = None
-        self._y = None
+        self.parent = {}
+        self.depth = {}
 
-    # 暴力法 逐层遍历
     def isCousins(self, root: TreeNode, x: int, y: int) -> bool:
-        depth = 1
-        node_queue = [root]
-        while True:
-            node_queue = self.layer_traverse(node_queue, depth, x, y)
-            if all([self._y == self._x, self._x, self._y]):
-                return True
-            elif all([self._y != self._x, self._x, self._y]):
-                return False
-            if not node_queue:
-                break
-            depth += 1
-        return False
+        self.dfs(root)
+        return self.depth[x] == self.depth[y] and self.parent[x] != self.parent[y]
 
-    def layer_traverse(self, nodes: list, depth, x, y):
-        queue = []
-        for node in nodes:
-            if node.val == x:
-                self._x = depth
-            if node.val == y:
-                self._y = depth
-            if node.left:
-                queue.append(node.left)
-            if node.right:
-                queue.append(node.right)
-        return queue
+    def dfs(self, node, par=None):
+        if node:
+            self.depth[node.val] = 1 + self.depth[par.val] if par else 0
+            self.parent[node.val] = par
+            self.dfs(node.left, node)
+            self.dfs(node.right, node)
 
 
 if __name__ == '__main__':
